@@ -1,0 +1,20 @@
+---
+- name: create group
+  group:
+    name: "{{ username }}"
+    gid: 510
+    state: present
+- name: create user
+  user:
+    name: "{{ username }}"
+    append: true
+    createhome: true
+    groups: adm,{{ username }}
+    shell: /bin/bash
+    password: '!!'
+    uid: 510
+- name: set authorized_keys
+  authorized_key:
+    user: "{{ username }}"
+    state: present
+    key: "{{ lookup('file', '~/.ssh/{{ username }}-id_rsa.pub') }}"
